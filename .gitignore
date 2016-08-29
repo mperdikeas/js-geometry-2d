@@ -1,0 +1,4 @@
+node_modules/
+lib/*
+!lib/dummy
+npm-debug.log
