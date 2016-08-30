@@ -37,12 +37,19 @@ class Point {
         this.x = x;
         this.y = y;
     }
+    static SEP = '~';
     equals(p2: Point): boolean {
         return this.x===p2.x && this.y===p2.y;
     }
     toString(): string {
-        return `(${this.x}, ${this.y})`;
+        return `${this.x}${Point.SEP}${this.y}`;
     }
+
+    static fromString(s: string): Point {
+        const [x,y]=s.split(Point.SEP);
+        return new Point(parseFloat(x),parseFloat(y));
+    }
+
     distanceFromStartOfAxes() {
         return Math.sqrt(sq(this.x)+sq(this.y));
     }

@@ -24,6 +24,14 @@ describe('inRange', function () {
 });
 
 describe('Point', function () {
+    describe('toString-fromString', function() {
+        it('should work', function() {
+            const ps = [new Point(-3,3.2234), new Point(-1234.3, 23.23), new Point(-Infinity, Infinity), new Point(0,0), new Point(3,2), new Point(1.00000000000000001, -234.00000000000000), new Point(0.0, 0.00000)];
+            ps.forEach( (p) => {
+                assert(Point.fromString(p.toString()).equals(p));
+            });
+        });
+    });
     describe('rotate90Right', function () {
         it('should work'
            , function () {
