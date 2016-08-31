@@ -106,18 +106,18 @@ class Point {
 
 
 class Vector {
-    pointA: Point;
-    pointB: Point;
-    constructor(pointA: Point, pointB: Point) {
-        this.pointA = pointA;
-        this.pointB = pointB;
+    from: Point;
+    to: Point;
+    constructor(from: Point, to: Point) {
+        this.from = from;
+        this.to = to;
     }
     static ARROW='=>';
     equals(v2: Vector): boolean {
-        return this.pointA.equals(v2.pointA) && this.pointB.equals(v2.pointB);
+        return this.from.equals(v2.from) && this.to.equals(v2.to);
     }
     toString(): string {
-        return `(${this.pointA})${Vector.ARROW}(${this.pointB})`;
+        return `(${this.from})${Vector.ARROW}(${this.to})`;
     }
     static fromString(s: string): Vector {
         let [fromS,toS]=s.split(Vector.ARROW);
@@ -131,22 +131,22 @@ class Vector {
                           , Point.fromString(toS));
     }    
     isVertical(): boolean {
-        return this.pointA.x === this.pointB.x;
+        return this.from.x === this.to.x;
     }
     isHorizontal(): boolean {
-        return this.pointA.y === this.pointB.y;
+        return this.from.y === this.to.y;
     }
     yProjectionInPlace(): Vector {
-        return new Vector(this.pointA, new Point(this.pointA.x, this.pointB.y));
+        return new Vector(this.from, new Point(this.from.x, this.to.y));
     }
     xProjectionInPlace(): Vector {
-        return new Vector(this.pointA, new Point(this.pointB.x, this.pointA.y));
+        return new Vector(this.from, new Point(this.to.x, this.from.y));
     }
     yDelta(): number {
-        return this.pointB.y - this.pointA.y;
+        return this.to.y - this.from.y;
     }
     xDelta(): number {
-        return this.pointB.x - this.pointA.x;
+        return this.to.x - this.from.x;
     }    
 }
 
