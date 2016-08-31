@@ -34,8 +34,8 @@ class Point {
     x: number;
     y: number;
     constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
+        this.x = (x===-0)?0:x; // change negative zeros to ordinary ones
+        this.y = (y===-0)?0:y;
     }
     static SEP = '~';
     equals(p2: Point): boolean {
@@ -95,6 +95,10 @@ class Point {
     }
     belowOf(o: Point, sameYAllowed: boolean): boolean {
         return (sameYAllowed?lte:lt).call(null, this.y, o.y);
+    }
+    reflectionInGrid(width: number, height: number) {
+        const middle: Point = new Point((width-1)/2., (height-1)/2.);
+        return this.subtract(middle, false).opposite().add(middle, false);
     }
 
 }

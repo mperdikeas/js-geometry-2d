@@ -24,6 +24,27 @@ describe('inRange', function () {
 });
 
 describe('Point', function () {
+    describe('constructor', function () {
+        it('should work', function () {
+            const p = new Point(1,3);
+            const expected = new Point(1,3);
+            assert(_.isEqual(p, expected));
+            assert(p.equals(expected));
+            assert(expected.equals(p));
+           });     
+    });
+    describe('reflectionInGrid', function() {
+        const sixPacks = [ [0,0,1,1,0,0], [0,0,1,2,0,1], [0,0,1,3,0,2], [1,0,2,1,0,0]
+                           , [1,0,2,2,0,1],[1,0,2,3,0,2], [2,3,3,4,0,0], [1,4,2,5,0,0]
+                           , [1,4,2,6,0,1],[1,4,5,6,3,1], [1,4,6,6,4,1] ];
+        it('should work', function() {
+            for (let [a,b,c,d,e,f,g] of sixPacks) {
+                const p = new Point(a,b);
+                const p2 = p.reflectionInGrid(c,d);
+                assert(p2.equals(new Point(e,f)));
+            }
+        });
+    });
     describe('toString-fromString', function() {
         it('should work', function() {
             const ps = [new Point(-3,3.2234), new Point(-1234.3, 23.23), new Point(-Infinity, Infinity), new Point(0,0), new Point(3,2), new Point(1.00000000000000001, -234.00000000000000), new Point(0.0, 0.00000)];
