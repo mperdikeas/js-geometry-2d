@@ -126,6 +126,45 @@ describe('Point', function () {
     });
 });
 
+describe('Vector', function() {
+
+    describe('toString', function() {
+        it('should work', function() {
+            const v = new Vector(new Point(0,1), new Point(2,3));
+            assert.equal(v.toString(), `(0~1)${Vector.ARROW}(2~3)`);
+        });
+    });
+
+    describe('equals', function() {
+        it('should work', function() {
+            const v1 = new Vector(new Point(0,1), new Point(2,3));
+            const v2 = new Vector(new Point(0,1), new Point(2,3));
+            assert(v1!==v2);
+            assert(v1.equals(v2));
+            assert(v2.equals(v1));
+        });
+    });
+
+    describe('fromString', function() {
+        it('should work', function() {
+            const v1 = new Vector(new Point(0,1), new Point(2,3));
+            const v2 = Vector.fromString(`(0~1)${Vector.ARROW}(2~3)`);
+            assert(v1.equals(v2));
+            assert(v2.equals(v1));
+        });
+        it('should work #2', function() {
+            const values=[[`(0~1)${Vector.ARROW}(2~-3)`  , new Vector(new Point(0,1)        , new Point( 2,-3))],
+                          [`(0~-1)${Vector.ARROW}(-2~-3)`, new Vector(new Point(0,-1), new Point(-2,-3))]];
+            for (let [s, v2] of values) {
+                const v1 = Vector.fromString(s, false);
+                assert(v1.equals(v2));
+                assert(v2.equals(v1));
+            }
+        });        
+    });    
+
+});
+
 describe('Rectangle', function() {
     let R1, R2;
     describe('constructor, factory and equals', function() {

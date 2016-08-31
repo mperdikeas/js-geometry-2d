@@ -103,6 +103,8 @@ class Point {
 
 }
 
+
+
 class Vector {
     pointA: Point;
     pointB: Point;
@@ -110,11 +112,23 @@ class Vector {
         this.pointA = pointA;
         this.pointB = pointB;
     }
+    static ARROW='=>';
     equals(v2: Vector): boolean {
         return this.pointA.equals(v2.pointA) && this.pointB.equals(v2.pointB);
     }
     toString(): string {
-        return `[${this.pointA}->${this.pointB}]`;
+        return `(${this.pointA})${Vector.ARROW}(${this.pointB})`;
+    }
+    static fromString(s: string): Vector {
+        let [fromS,toS]=s.split(Vector.ARROW);
+        for (let s of [fromS, toS]) {
+            assert.equal(s[0], '(');
+            assert.equal(s[s.length-1], ')');
+        }
+        fromS = fromS.slice(1).slice(0, -1);
+        toS   =   toS.slice(1).slice(0, -1);
+        return new Vector(Point.fromString(fromS)
+                          , Point.fromString(toS));
     }    
     isVertical(): boolean {
         return this.pointA.x === this.pointB.x;
