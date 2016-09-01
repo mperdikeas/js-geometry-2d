@@ -77,7 +77,6 @@ class Point {
         return new Point(this.x, this.y+d);
     }    
     add(otherPoint: Point): Point {
-        assert(otherPoint instanceof Point);
         return new Point(this.x+otherPoint.x, this.y+otherPoint.y);
     }
     subtract(otherPoint: Point): Point {
@@ -100,7 +99,7 @@ class Point {
     }
     reflectionInGrid(width: number, height: number) {
         const middle: Point = new Point((width-1)/2., (height-1)/2.);
-        return this.subtract(middle, false).opposite().add(middle, false);
+        return this.subtract(middle, false).opposite().add(middle);
     }
 
 }
