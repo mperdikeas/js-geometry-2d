@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {inRange, Point, Vector, Rectangle} from '../lib/point.js';
 
 describe('inRange', function () {
-    it('should work' , function () {
+    it('should work as expected' , function () {
         [true, false].forEach( (b1)=> {
             [true, false].forEach( (b2) => {
                 assert(!inRange(-0.00000000001, 0, 1, b1, b2));
@@ -25,14 +25,61 @@ describe('inRange', function () {
 
 describe('Point', function () {
     describe('constructor', function () {
-        it('should work', function () {
+        it('should work as expected', function () {
             const p = new Point(1,3);
             const expected = new Point(1,3);
             assert(_.isEqual(p, expected));
             assert(p.equals(expected));
             assert(expected.equals(p));
-           });     
+        });
+        it('should work as expected #2', function() {
+            const points = [{x: 1, y:2}, {x: 0, y:5}, {x:6, y:7}, {x:0, y:8}, {x:0, y:8}, {x:8, y:7}, {x: 8, y:8}];
+            for (let {x,y} of points)
+                new Point(x,y);
+        });
+        it('should work as expected #3', function() {
+            const points = [{x: -1, y:2}, {x: 0, y:-1}, {x:-6, y:-7}, {x:0, y:9}, {x:0, y:19}, {x:9, y:7}, {x: 9, y:9}, {x: -234, y:-234}, {x: 23413, y:123}];
+            for (let {x,y} of points)
+                new Point(x,y);
+        });    
     });
+
+    describe('toString', function() {
+        it('should work', function() {
+            {
+                const v = new Point(2,3);
+                assert.equal('2~3', v);
+            }
+            {
+                const v = new Point(-22,-303, false);
+                assert.equal('-22~-303', v);
+            }
+        });
+    });
+
+    describe('equals', function() {
+        it('should work', function() {
+            const v1 = new Point(1,2);
+            const v2 = new Point(1,2);
+            assert(v1!==v2);
+            assert(v1.equals(v2));
+            assert(v2.equals(v1));
+        });
+    });
+
+    describe('fromString', function() {
+        it('should work', function() {
+            const values = [['2~3', true, new Point(2,3)],
+                            ['-23~-3', false, new Point(-23, -3, false)],
+                            ['-23~-30', false, new Point(-23, -30, false)]];
+            values.forEach( ([s,strict, v2]) => {
+                const v1 = Point.fromString(s, strict);
+                assert(v1.equals(v2));
+                assert(v2.equals(v1));
+            });
+        });
+    });
+    
     describe('reflectionInGrid', function() {
         const sixPacks = [ [0,0,1,1,0,0], [0,0,1,2,0,1], [0,0,1,3,0,2], [1,0,2,1,0,0]
                            , [1,0,2,2,0,1],[1,0,2,3,0,2], [2,3,3,4,0,0], [1,4,2,5,0,0]
