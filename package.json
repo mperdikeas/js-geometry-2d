@@ -1,6 +1,6 @@
 {
   "name": "geometry-2d",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "",
   "main": "lib/point.js",
   "scripts": {
@@ -39,8 +39,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-polyfill": "^6.7.4",
     "lodash": "^4.10.0",
-    "source-map-support": "^0.4.5"
+    "source-map-support": "0.4.3"
   },
+  "dependencies.source-map-support.README": "https://github.com/evanw/node-source-map-support/issues/155",
   "bugs": {
     "url": "https://github.com/mperdikeas/js-geometry-2d/issues"
   },
