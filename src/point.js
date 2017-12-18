@@ -113,66 +113,9 @@ class Point {
     }
     reflectionInGrid(width: number, height: number) {
         const middle: Point = new Point((width-1)/2., (height-1)/2.);
-        return this.subtract(middle, false).opposite().add(middle);
+        return this.subtract(middle).opposite().add(middle);
     }
 
-}
-
-
-// These are bound, not free, vectors
-class Vector {
-    from: Point;
-    to: Point;
-    constructor(from: Point, to: Point) {
-        this.from = from;
-        this.to = to;
-    }
-    static ARROW='=>';
-    equals(v2: Vector): boolean {
-        return this.from.equals(v2.from) && this.to.equals(v2.to);
-    }
-    equalsWithin(v2: Vector, tolerance: number): boolean {
-        return this.from.equalsWithin(v2.from, tolerance) && this.to.equalsWithin(v2.to, tolerance);
-    }
-    toString(): string {
-        return `(${this.from.toString()})${Vector.ARROW}(${this.to.toString()})`;
-    }
-    static fromString(s: string): Vector {
-        let [fromS,toS]=s.split(Vector.ARROW);
-        for (let s of [fromS, toS]) {
-            assert.equal(s[0], '(');
-            assert.equal(s[s.length-1], ')');
-        }
-        fromS = fromS.slice(1).slice(0, -1);
-        toS   =   toS.slice(1).slice(0, -1);
-        return new Vector(Point.fromString(fromS)
-                          , Point.fromString(toS));
-    }    
-    isVertical(): boolean {
-        return this.from.x === this.to.x;
-    }
-    isHorizontal(): boolean {
-        return this.from.y === this.to.y;
-    }
-    yProjectionInPlace(): Vector {
-        return new Vector(this.from, new Point(this.from.x, this.to.y));
-    }
-    xProjectionInPlace(): Vector {
-        return new Vector(this.from, new Point(this.to.x, this.from.y));
-    }
-    yDelta(): number {
-        return this.to.y - this.from.y;
-    }
-    xDelta(): number {
-        return this.to.x - this.from.x;
-    }
-    scalarMul(n: number): Vector {
-        let delta = new Point(n*this.xDelta(), n*this.yDelta());
-        let rv = new Vector(this.from, this.from.add(delta));
-        assert(this.from.equals(rv.from), 'scalar multiplication should not change the origin of bound vector');
-        return rv;
-    }
-    
 }
 
 

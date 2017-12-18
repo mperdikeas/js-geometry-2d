@@ -12,4 +12,4 @@ if [ $(get_npm_command) != "publish" ]; then
 fi
 # else
 echo "prepublish called in the context of publish"
-npm run clean && flow check && npm run test && npm run build && cp src/point.js lib/point.js.flow
+npm run clean && flow check && npm run test && npm run build && for f in $(find src/ -iname *.js | cut -c5-) ; do cp src/$f lib/$f.flow; done
