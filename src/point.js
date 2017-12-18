@@ -18,6 +18,16 @@ if (!global._babelPolyfill) // https://github.com/s-panferov/awesome-typescript-
 import assert from 'assert';
 import _      from 'lodash';
 
+
+/* The coordinate system assumed by this package is the Cartesian coordinate system as used in Math.
+   For those methods that imply some preconceived notion of 'up' and 'down' note that we use
+   the standard Math convention of greater ys being higher, and not the inverted convention
+   typically used for screen coordinates (greater ys being lower). This is because this library
+   lives in Math space, not in "computer screen" space. It is trivial to translate accordingly
+   just prior to display.
+
+*/
+
 type F<T,S,U> = (t: T, s: S) => U;
 
 const sq : (x: number)=>number = (x:number):number=>Math.pow(x,2);
@@ -42,6 +52,10 @@ class Point {
     static SEP = '~';
     equals(p2: Point): boolean {
         return this.x===p2.x && this.y===p2.y;
+    }
+    equalsWithin(p2: Point, tolerance: number): boolean {
+        return ((Math.abs(this.x-p2.x)<=tolerance)
+             && (Math.abs(this.y-p2.y)<=tolerance));
     }
     toString(): string {
         return `${this.x}${Point.SEP}${this.y}`;
@@ -105,7 +119,7 @@ class Point {
 }
 
 
-
+// These are bound, not free, vectors
 class Vector {
     from: Point;
     to: Point;
@@ -117,8 +131,11 @@ class Vector {
     equals(v2: Vector): boolean {
         return this.from.equals(v2.from) && this.to.equals(v2.to);
     }
+    equalsWithin(v2: Vector, tolerance: number): boolean {
+        return this.from.equalsWithin(v2.from, tolerance) && this.to.equalsWithin(v2.to, tolerance);
+    }
     toString(): string {
-        return `(${this.from})${Vector.ARROW}(${this.to})`;
+        return `(${this.from.toString()})${Vector.ARROW}(${this.to.toString()})`;
     }
     static fromString(s: string): Vector {
         let [fromS,toS]=s.split(Vector.ARROW);
@@ -148,68 +165,18 @@ class Vector {
     }
     xDelta(): number {
         return this.to.x - this.from.x;
-    }    
-}
-
-
-type PositiveNumber = number; // there is no way to associate custom checks with Flow types so this is for documentation mostly
-
-
-export type FourCorners = {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point};
-
-class Rectangle {
-    topLeft: Point;
-    bottomRight: Point;
-    constructor(topLeft: Point, bottomRight: Point) {
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
-        assert(topLeft.toTheLeftOf(bottomRight, false));;
-        assert(topLeft.aboveOf    (bottomRight, false));
     }
-    equal(o: Rectangle) {
-        return this.topLeft.equals(o.topLeft) && this.bottomRight.equals(o.bottomRight);
+    scalarMul(n: number): Vector {
+        let delta = new Point(n*this.xDelta(), n*this.yDelta());
+        let rv = new Vector(this.from, this.from.add(delta));
+        assert(this.from.equals(rv.from), 'scalar multiplication should not change the origin of bound vector');
+        return rv;
     }
-    static topLeftWidthHeight(topLeft: Point, width: PositiveNumber, height: PositiveNumber): Rectangle {
-        assert(width>0) && assert(height>0);
-        return new Rectangle(topLeft, topLeft.addX(width).addY(-height));
-    }
-    fourCorners(): FourCorners {
-        return {
-            topLeft: this.topLeft,
-            topRight: new Point(this.bottomRight.x, this.topLeft.y),
-            bottomRight: this.bottomRight,
-            bottomLeft: new Point(this.topLeft.x, this.bottomRight.y)
-        };
-    }
-    _pointLiesInside(p: Point, includeEdges: boolean): boolean {
-        return inRange(p.x, this.topLeft.x    , this.bottomRight.x, includeEdges, includeEdges) &&
-               inRange(p.y, this.bottomRight.y, this.topLeft.y    , includeEdges, includeEdges);
-    }
-    pointLiesInside(p: Point): boolean {
-        return this._pointLiesInside(p, true);
-    }
-    pointLiesSafelyInside(p: Point): boolean {
-        return this._pointLiesInside(p, false);
-    }
-    pointLiesOutside(p: Point): boolean {
-        return !this.pointLiesSafelyInside(p);
-    }
-    pointLiesSafelyOutside(p: Point): boolean {
-        return !this.pointLiesInside(p);
-    }
-    pointLiesOnEdge(p: Point): boolean {
-        return this.pointLiesInside(p) && !this.pointLiesSafelyInside(p);
-    }
-    containsRectangle(r: Rectangle, mayTouchEdge: boolean = true): boolean {
-        const fc: FourCorners = r.fourCorners();
-        const {topLeft: tl, topRight: tr, bottomRight: br, bottomLeft:bl} = fc;
-        return _.every([tl, tr, br, bl], (p: Point) => this._pointLiesInside(p, mayTouchEdge));
-    }
+    
 }
 
 
 
 exports.inRange = inRange;
 exports.Point = Point;
-exports.Vector = Vector;
-exports.Rectangle = Rectangle;
+
