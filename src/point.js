@@ -42,6 +42,11 @@ function inRange(x: number, a: number, b: number, includeA: boolean = true, incl
     return aCheck(x, a) && bCheck(x, b);
 }
 
+/**
+ * Models a rectangle in Cartesian space, not screen space.
+ * E.g. greater y-values are considered to be higher, not lower
+ *
+ */
 class Point {
     x: number;
     y: number;

@@ -20,20 +20,26 @@ import _      from 'lodash';
 
 
 import {inRange, Point} from './point.js';
+import {Vector} from './vector.js';
 
 type PositiveNumber = number; // there is no way to associate custom checks with Flow types so this is for documentation mostly
 
 
 export type FourCorners = {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point};
 
+/**
+ * Models a rectangle in Cartesian space, not screen space.
+ * E.g. greater y-values are considered to be higher, not lower
+ *
+ */
 class Rectangle {
     topLeft: Point;
     bottomRight: Point;
     constructor(topLeft: Point, bottomRight: Point) {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
-        assert(topLeft.toTheLeftOf(bottomRight, false));;
-        assert(topLeft.aboveOf    (bottomRight, false));
+        assert(topLeft.toTheLeftOf(bottomRight, true));
+        assert(topLeft.aboveOf    (bottomRight, true));
     }
     equal(o: Rectangle) {
         return this.topLeft.equals(o.topLeft) && this.bottomRight.equals(o.bottomRight);
@@ -74,6 +80,14 @@ class Rectangle {
         const {topLeft: tl, topRight: tr, bottomRight: br, bottomLeft:bl} = fc;
         return _.every([tl, tr, br, bl], (p: Point) => this._pointLiesInside(p, mayTouchEdge));
     }
+    width(): number {return Math.abs( (new Vector(this.topLeft, this.bottomRight)).xDelta());}
+
+    height(): number {return Math.abs( (new Vector(this.topLeft, this.bottomRight)).yDelta());}
+
+    widthAsCellSystem(): number {return this.width()+1;}
+
+    heightAsCellSystem(): number {return this.height()+1;}
+    
 }
 
 

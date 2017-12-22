@@ -1,7 +1,7 @@
 {
   "name": "geometry-2d",
-  "version": "0.1.2",
-  "description": "",
+  "version": "0.2.1",
+  "description": "rudimentary library for 2D geometry that I use in a couple of my projects (contains only those methods I've had need of)",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rm -fr ./lib/*.js && rm -fr ./lib/*.js.flow && rm -fr ./lib/*.js.map",
